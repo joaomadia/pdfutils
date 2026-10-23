@@ -59,7 +59,6 @@ const els = {
   installUpdate: $("#installUpdate"),
   themeToggle: $("#themeToggle"),
   globalStatus: $("#globalStatus"),
-
   convertSource: $("#convertSource"),
   convertOutput: $("#convertOutput"),
   convertResult: $("#convertResult"),
@@ -73,7 +72,6 @@ const els = {
   convertProgressTrack: $("#convertProgressTrack"),
   convertProgressBar: $("#convertProgressBar"),
   cancelConvertButton: $("#cancelConvertButton"),
-
   mergeFileCount: $("#mergeFileCount"),
   mergeDropZone: $("#mergeDropZone"),
   mergeEmptyState: $("#mergeEmptyState"),
@@ -90,18 +88,15 @@ const els = {
   mergeProgressTrack: $("#mergeProgressTrack"),
   mergeProgressBar: $("#mergeProgressBar"),
   cancelMergeButton: $("#cancelMergeButton"),
-
   validateSource: $("#validateSource"),
   validateResult: $("#validateResult"),
   validateBadge: $("#validateBadge"),
   pickValidateSource: $("#pickValidateSource"),
   validateButton: $("#validateButton"),
-
   signatureValidationSource: $("#signatureValidationSource"),
   signatureValidationResult: $("#signatureValidationResult"),
   pickSignatureValidationSource: $("#pickSignatureValidationSource"),
   validateSignaturesButton: $("#validateSignaturesButton"),
-
   signSource: $("#signSource"),
   signOutput: $("#signOutput"),
   signCertificate: $("#signCertificate"),
@@ -117,7 +112,6 @@ const els = {
   signProgressTrack: $("#signProgressTrack"),
   signProgressBar: $("#signProgressBar"),
   cancelSignButton: $("#cancelSignButton"),
-
   onrSource: $("#onrSource"),
   onrTitle: $("#onrTitle"),
   onrCertificate: $("#onrCertificate"),
@@ -134,7 +128,6 @@ const els = {
   onrCompleteActions: $("#onrCompleteActions"),
   downloadOnrButton: $("#downloadOnrButton"),
   openOnrValidationButton: $("#openOnrValidationButton"),
-
   ghostscriptStatus: $("#ghostscriptStatus"),
   installGhostscript: $("#installGhostscript"),
   checkGhostscript: $("#checkGhostscript"),
@@ -157,7 +150,16 @@ const els = {
   clearOnrOutputFolder: $("#clearOnrOutputFolder"),
   openWebPkiInstaller: $("#openWebPkiInstaller"),
   saveSettings: $("#saveSettings"),
-  settingsResult: $("#settingsResult")
+  settingsResult: $("#settingsResult"),
+  historyTableBody: $("#onrHistoryTableBody"),
+  historySearch: $("#onrHistorySearch"),
+  historyDateFrom: $("#onrHistoryDateFrom"),
+  historyDateTo: $("#onrHistoryDateTo"),
+  historySortBy: $("#onrHistorySortBy"),
+  historyPageSize: $("#onrHistoryPageSize"),
+  historyPrevPage: $("#onrHistoryPrevPage"),
+  historyNextPage: $("#onrHistoryNextPage"),
+  onrHistoryFilterButton: $("#onrHistoryFilterButton")
 };
 
 const generalFileExtensions = ["pdf", "doc", "docx", "odt", "rtf", "png", "jpg", "jpeg", "bmp", "tif", "tiff"];
@@ -1056,6 +1058,15 @@ async function loadAndRenderOnrHistory() {
   renderOnrHistory();
 }
 
+function matchesHistorySearch(item, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  const name = (item.fileName || "").toLowerCase();
+  const link = (item.endpointLink || "").toLowerCase();
+  const date = (item.signedAt || "").toLowerCase();
+  return name.includes(q) || link.includes(q) || date.includes(q);
+}
+
 function renderOnrHistory() {
   if (!els.historyTableBody) return;
 
@@ -1135,34 +1146,31 @@ function renderOnrHistory() {
   els.historyPrevPage.disabled = onrHistoryCurrentPage <= 1;
   els.historyNextPage.disabled = onrHistoryCurrentPage >= totalPages;
 }
-
 // Configuração dos Listeners de Eventos do Histórico
-if (els.historySearch) {
-  els.historySearch.addEventListener("input", () => {
+if (els.onrHistoryFilterButton) {
+  els.onrHistoryFilterButton.addEventListener("click", () => {
     onrHistoryCurrentPage = 1;
     renderOnrHistory();
   });
-  els.historyDateFrom.addEventListener("change", () => {
-    onrHistoryCurrentPage = 1;
-    renderOnrHistory();
-  });
-  els.historyDateTo.addEventListener("change", () => {
-    onrHistoryCurrentPage = 1;
-    renderOnrHistory();
-  });
-  els.historySortBy.addEventListener("change", () => {
-    renderOnrHistory();
-  });
+}
+
+if (els.historyPageSize) {
   els.historyPageSize.addEventListener("change", () => {
     onrHistoryCurrentPage = 1;
     renderOnrHistory();
   });
+}
+
+if (els.historyPrevPage) {
   els.historyPrevPage.addEventListener("click", () => {
     if (onrHistoryCurrentPage > 1) {
       onrHistoryCurrentPage--;
       renderOnrHistory();
     }
   });
+}
+
+if (els.historyNextPage) {
   els.historyNextPage.addEventListener("click", () => {
     onrHistoryCurrentPage++;
     renderOnrHistory();
