@@ -1,0 +1,1 @@
+DO NOT output raw JSON blocks like {"name": "write_to_file"}. You MUST strictly use Anthropic-style XML tags to invoke tools (e.g., <write_to_file> or <read_file>). Always structure your tool calls inside the requested XML block format.

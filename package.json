@@ -1,0 +1,75 @@
+{
+  "name": "pdfutils",
+  "version": "0.3.5",
+  "description": "Aplicativo Electron para converter, validar e assinar PDFs com PDF/A, Web PKI e ONR.",
+  "main": "src/main.js",
+  "author": "madiaznx",
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/madiaznx/pdfutils-updates.git"
+  },
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --smoke-test",
+    "test": "node --test tests/*.test.js",
+    "dist": "electron-builder --win --x64",
+    "publish": "electron-builder --win --x64 --publish always",
+    "publish:gh": "powershell -ExecutionPolicy Bypass -NoProfile -Command \"$env:GH_TOKEN=(gh auth token); npm.cmd run publish\"",
+    "version:bump": "node scripts/bump-version.js"
+  },
+  "build": {
+    "appId": "br.com.madiaznx.pdfutils",
+    "productName": "PDFUtils",
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "build/icon.png",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "afterAllArtifactBuild": "scripts/after-all-artifact-build.js",
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "PDFUtils-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PDFUtils",
+      "include": "build/installer.nsh"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "madiaznx",
+        "repo": "pdfutils-updates",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.8.9",
+    "node-forge": "^1.4.0",
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3"
+  }
+}
